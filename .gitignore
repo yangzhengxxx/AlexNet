@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+.env
+
+# 数据、模型与训练产物
+data/
+*.pth
+*.pt
+*.onnx
+result_figures/
+runs/
+
+# 工具与系统文件
+.idea/
+.vscode/
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+Thumbs.db

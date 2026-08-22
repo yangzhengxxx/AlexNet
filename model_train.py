@@ -18,7 +18,7 @@ def train_val_data_process():
     train_data = FashionMNIST(root="./data",
                               train=True,  # 训练集,6w张图片
                               transform=transforms.Compose([transforms.Resize(size=227), transforms.ToTensor()]),
-                              download=False)
+                              download=True)
 
     # 将训练集拆分为训练集与验证集（8:2比例）
     train_data, val_data = Data.random_split(train_data, [round(0.8 * len(train_data)), round(0.2 * len(train_data))])
@@ -114,7 +114,7 @@ def train_model_process(model, train_dataloader, val_dataloader, num_epochs):
             train_loss += loss.item() * b_x.size(0)
 
             # 如果预测正确，则准确度train_corrects加1
-            train_corrects += torch.sum(pre_lab == b_y.data)
+            train_corrects += torch.sum(pre_lab == b_y)
             # 当前用于训练的样本数量
             train_num += b_x.size(0)
 
@@ -143,7 +143,7 @@ def train_model_process(model, train_dataloader, val_dataloader, num_epochs):
             val_loss += loss.item() * b_x.size(0)
 
             # 如果预测正确，则准确度train_corrects加1
-            val_corrects += torch.sum(pre_lab == b_y.data)
+            val_corrects += torch.sum(pre_lab == b_y)
 
             # 当前用于训练的样本数量
             val_num += b_x.size(0)
@@ -168,7 +168,7 @@ def train_model_process(model, train_dataloader, val_dataloader, num_epochs):
 
     # 选择最优参数
     # 加载最高准确率下的模型参数
-    torch.save(best_model_wts, "C:/Users/yyyy/Desktop/AlexNet/best_model.pth")
+    torch.save(best_model_wts, "best_model.pth")
 
     train_process = pd.DataFrame(data={"epoch": range(num_epochs),
                                        "train_loss_all": train_loss_all,
@@ -215,7 +215,7 @@ def matplot_acc_loss(train_process):
 
 if __name__ == "__main__":
     # 将模型实例化
-    AlexNet = AlexNet()
+    model = AlexNet()
     train_dataloader, val_dataloader = train_val_data_process()
-    train_porcess = train_model_process(AlexNet, train_dataloader, val_dataloader, 20)
-    matplot_acc_loss(train_porcess)
+    train_process = train_model_process(model, train_dataloader, val_dataloader, 20)
+    matplot_acc_loss(train_process)

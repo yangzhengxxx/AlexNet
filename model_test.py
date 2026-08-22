@@ -19,7 +19,7 @@ def test_data_process():
     test_dataloader = Data.DataLoader(
         dataset=test_data,
         batch_size=128,
-        shuffle=True,
+        shuffle=False,
         num_workers=0
     )
     return test_dataloader
@@ -45,7 +45,7 @@ def test_model_process(model, test_dataloader):
             output = model(b_x)
             pre_lab = torch.argmax(output, dim=1)
 
-            test_corrects += torch.sum(pre_lab == b_y.data)
+            test_corrects += torch.sum(pre_lab == b_y)
             test_num += b_x.size(0)
 
             # 收集前15个结果（预测+实际）
@@ -69,7 +69,8 @@ def test_model_process(model, test_dataloader):
 
 if __name__ == '__main__':
     model = AlexNet()
-    model.load_state_dict(torch.load("C:/Users/yyyy/Desktop/AlexNet/best_model.pth"))
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.load_state_dict(torch.load("best_model.pth", map_location=device))
     test_dataloader = test_data_process()
 
     test_model_process(model, test_dataloader)
